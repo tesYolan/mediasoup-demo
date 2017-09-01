@@ -8,7 +8,9 @@ export const Room = PropTypes.shape(
 				'connecting',
 				'connected',
 				'closed'
-			]).isRequired
+			]).isRequired,
+		audioOnly           : PropTypes.bool.isRequired,
+		audioOnlyInProgress : PropTypes.bool.isRequired
 	});
 
 export const Device = PropTypes.shape(

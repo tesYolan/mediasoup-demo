@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ClipboardButton from 'react-clipboard.js';
@@ -10,7 +11,7 @@ import Me from './Me';
 import Peers from './Peers';
 import Notifications from './Notifications';
 
-const Room = ({ room, onRoomLinkCopy }) =>
+const Room = ({ room, onRoomLinkCopy, onSetAudioMode }) =>
 {
 	return (
 		<Appear duration={300}>
@@ -41,6 +42,22 @@ const Room = ({ room, onRoomLinkCopy }) =>
 				<div className='me-container'>
 					<Me />
 				</div>
+
+				<div
+					className={classnames('audio-only-button', {
+						on       : room.audioOnly,
+						disabled : room.audioOnlyInProgress
+					})}
+					data-tip='Toggle audio only mode'
+					data-type='dark'
+					onClick={() => onSetAudioMode(!room.audioOnly)}
+				/>
+
+				<ReactTooltip
+					effect='solid'
+					delayShow={100}
+					delayHide={100}
+				/>
 			</div>
 		</Appear>
 	);
@@ -49,7 +66,8 @@ const Room = ({ room, onRoomLinkCopy }) =>
 Room.propTypes =
 {
 	room           : appPropTypes.Room.isRequired,
-	onRoomLinkCopy : PropTypes.func.isRequired
+	onRoomLinkCopy : PropTypes.func.isRequired,
+	onSetAudioMode : PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) =>
@@ -66,6 +84,13 @@ const mapDispatchToProps = (dispatch) =>
 				{
 					text : 'Room link copied to the clipboard'
 				}));
+		},
+		onSetAudioMode : (enable) =>
+		{
+			if (enable)
+				dispatch(requestActions.enableAudioOnly());
+			else
+				dispatch(requestActions.disableAudioOnly());
 		}
 	};
 };

@@ -72,6 +72,20 @@ export default ({ dispatch, getState }) => (next) =>
 
 				break;
 			}
+
+			case 'ENABLE_AUDIO_ONLY':
+			{
+				client.enableAudioOnly();
+
+				break;
+			}
+
+			case 'DISABLE_AUDIO_ONLY':
+			{
+				client.disableAudioOnly();
+
+				break;
+			}
 		}
 
 		return next(action);

@@ -4,7 +4,9 @@
 {
   room :
   {
-    state : 'connected' // new/connecting/connected/closed
+    state               : 'connected', // new/connecting/connected/closed,
+    audioOnly           : false,
+    audioOnlyInProgress : false
   },
   me :
   {

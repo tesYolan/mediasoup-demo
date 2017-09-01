@@ -350,6 +350,86 @@ export default class RoomClient
 			});
 	}
 
+	// TODO: It may fail if a pending mic/webcam operatino is being done.
+	enableAudioOnly()
+	{
+		logger.debug('enableAudioOnly()');
+
+		this._dispatch(
+			stateActions.setAudioOnlyInProgress(true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				if (this._webcamProducer)
+					this._webcamProducer.close();
+
+				for (const peer of this._room.peers)
+				{
+					for (const consumer of peer.consumers)
+					{
+						if (consumer.kind !== 'video')
+							continue;
+
+						consumer.pause();
+					}
+				}
+
+				this._dispatch(
+					stateActions.setAudioOnlyState(true));
+
+				this._dispatch(
+					stateActions.setAudioOnlyInProgress(false));
+			})
+			.catch((error) =>
+			{
+				logger.error('enableAudioOnly() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setAudioOnlyInProgress(false));
+			});
+	}
+
+	// TODO: It may fail if a pending mic/webcam operatino is being done.
+	disableAudioOnly()
+	{
+		logger.debug('disableAudioOnly()');
+
+		this._dispatch(
+			stateActions.setAudioOnlyInProgress(true));
+
+		return Promise.resolve()
+			.then(() =>
+			{
+				if (!this._webcamProducer && this._room.canSend('video'))
+					this.enableWebcam();
+
+				for (const peer of this._room.peers)
+				{
+					for (const consumer of peer.consumers)
+					{
+						if (consumer.kind !== 'video' || !consumer.supported)
+							continue;
+
+						consumer.resume();
+					}
+				}
+
+				this._dispatch(
+					stateActions.setAudioOnlyState(false));
+
+				this._dispatch(
+					stateActions.setAudioOnlyInProgress(false));
+			})
+			.catch((error) =>
+			{
+				logger.error('disableAudioOnly() failed: %o', error);
+
+				this._dispatch(
+					stateActions.setAudioOnlyInProgress(false));
+			});
+	}
+
 	_join({ displayName, device })
 	{
 		this._dispatch(stateActions.setRoomState('connecting'));

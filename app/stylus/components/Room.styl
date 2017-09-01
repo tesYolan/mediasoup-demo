@@ -131,6 +131,45 @@
 			border: 1px solid rgba(#fff, 0.25);
 		}
 	}
+
+	> .audio-only-button {
+		position: fixed;
+		z-index: 101;
+		border-radius: 2px;
+		background-position: center;
+		background-size: 75%;
+		background-repeat: no-repeat;
+		background-color: rgba(#000, 0.5);
+		cursor: pointer;
+		transition-property: opacity, background-color;
+		transition-duration: 0.15s;
+		background-image: url('/resources/images/icon_audio_only_white.svg');
+		border-radius: 100%;
+
+		+desktop() {
+			height: 36px;
+			width: 36px;
+			bottom: 300px;
+			left: 20px;
+		}
+
+		+mobile() {
+			height: 175px;
+			width: 150px;
+			bottom: 10px;
+			left: 10px;
+		}
+
+		&.on {
+			background-image: url('/resources/images/icon_audio_only_black.svg');
+			background-color: rgba(#fff, 0.7);
+		}
+
+		&.disabled {
+			pointer-events: none;
+			opacity: 0.5;
+		}
+	}
 }
 
 @keyframes Room-info-state-connecting {

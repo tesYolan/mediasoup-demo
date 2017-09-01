@@ -59,6 +59,20 @@ export const changeWebcam = () =>
 	};
 };
 
+export const enableAudioOnly = () =>
+{
+	return {
+		type : 'ENABLE_AUDIO_ONLY'
+	};
+};
+
+export const disableAudioOnly = () =>
+{
+	return {
+		type : 'DISABLE_AUDIO_ONLY'
+	};
+};
+
 // This returns a redux-thunk action (a function).
 export const notify = ({ type = 'info', text, timeout }) =>
 {

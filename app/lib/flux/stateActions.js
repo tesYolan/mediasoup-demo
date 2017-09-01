@@ -38,6 +38,22 @@ export const setDisplayName = (displayName) =>
 	};
 };
 
+export const setAudioOnlyState = (enabled) =>
+{
+	return {
+		type    : 'SET_AUDIO_ONLY_STATE',
+		payload : { enabled }
+	};
+};
+
+export const setAudioOnlyInProgress = (flag) =>
+{
+	return {
+		type    : 'SET_AUDIO_ONLY_IN_PROGRESS',
+		payload : { flag }
+	};
+};
+
 export const addProducer = (producer) =>
 {
 	return {
