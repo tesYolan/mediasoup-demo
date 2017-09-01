@@ -43,15 +43,18 @@ const Room = ({ room, onRoomLinkCopy, onSetAudioMode }) =>
 					<Me />
 				</div>
 
-				<div
-					className={classnames('audio-only-button', {
-						on       : room.audioOnly,
-						disabled : room.audioOnlyInProgress
-					})}
-					data-tip='Toggle audio only mode'
-					data-type='dark'
-					onClick={() => onSetAudioMode(!room.audioOnly)}
-				/>
+				{room.state === 'connected' ?
+					<div
+						className={classnames('audio-only-button', {
+							on       : room.audioOnly,
+							disabled : room.audioOnlyInProgress
+						})}
+						data-tip='Toggle audio only mode'
+						data-type='dark'
+						onClick={() => onSetAudioMode(!room.audioOnly)}
+					/>
+					:null
+				}
 
 				<ReactTooltip
 					effect='solid'
