@@ -26,7 +26,7 @@ const VIDEO_CONSTRAINS =
 
 export default class RoomClient
 {
-	constructor({ roomId, peerName, displayName, device, dispatch })
+	constructor({ roomId, peerName, displayName, device, dispatch, getState })
 	{
 		logger.debug(
 			'constructor() [roomId:"%s", peerName:"%s", displayName:"%s", device:%s]',
@@ -40,6 +40,9 @@ export default class RoomClient
 
 		// Flux store dispatch function.
 		this._dispatch = dispatch;
+
+		// Flux store getState function.
+		this._getState = getState;
 
 		// My peer name.
 		this._peerName = peerName;
@@ -350,7 +353,6 @@ export default class RoomClient
 			});
 	}
 
-	// TODO: It may fail if a pending mic/webcam operatino is being done.
 	enableAudioOnly()
 	{
 		logger.debug('enableAudioOnly()');
@@ -371,7 +373,7 @@ export default class RoomClient
 						if (consumer.kind !== 'video')
 							continue;
 
-						consumer.pause();
+						consumer.pause('audio-only-mode');
 					}
 				}
 
@@ -390,7 +392,6 @@ export default class RoomClient
 			});
 	}
 
-	// TODO: It may fail if a pending mic/webcam operatino is being done.
 	disableAudioOnly()
 	{
 		logger.debug('disableAudioOnly()');
@@ -1034,6 +1035,10 @@ export default class RoomClient
 		// Receive the consumer (if we can).
 		if (consumer.supported)
 		{
+			// Pause it if video and we are in audio-only mode.
+			if (consumer.kind === 'video' && this._getState().room.audioOnly)
+				consumer.pause('audio-only-mode');
+
 			consumer.receive(this._recvTransport)
 				.then((track) =>
 				{

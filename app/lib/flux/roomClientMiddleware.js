@@ -1,6 +1,5 @@
 import RoomClient from '../RoomClient';
 
-// eslint-disable-next-line no-unused-vars
 export default ({ dispatch, getState }) => (next) =>
 {
 	let client;
@@ -14,7 +13,7 @@ export default ({ dispatch, getState }) => (next) =>
 				const { roomId, peerName, displayName, device } = action.payload;
 
 				client = new RoomClient(
-					{ roomId, peerName, displayName, device, dispatch });
+					{ roomId, peerName, displayName, device, dispatch, getState });
 
 				// TODO: TMP
 				global.CLIENT = client;
