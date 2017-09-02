@@ -600,23 +600,27 @@ export default class RoomClient
 			})
 			.then(() =>
 			{
-				// Add our mic.
-				if (this._room.canSend('audio'))
-				{
-					this._setMicProducer()
-						.catch(() => {});
-				}
-			})
-			.then(() =>
-			{
-				// Add our webcam (unless the cookie says no).
-				if (this._room.canSend('video'))
-				{
-					const devicesCookie = cookiesManager.getDevices();
+				Promise.resolve()
+					// Add our mic.
+					.then(() =>
+					{
+						if (!this._room.canSend('audio'))
+							return;
 
-					if (!devicesCookie || devicesCookie.webcamEnabled)
-						this.enableWebcam();
-				}
+						return this._setMicProducer()
+							.catch(() => {});
+					})
+					// Add our webcam (unless the cookie says no).
+					.then(() =>
+					{
+						if (!this._room.canSend('video'))
+							return;
+
+						const devicesCookie = cookiesManager.getDevices();
+
+						if (!devicesCookie || devicesCookie.webcamEnabled)
+							this.enableWebcam();
+					});
 			})
 			.then(() =>
 			{
