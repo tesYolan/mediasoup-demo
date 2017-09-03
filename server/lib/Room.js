@@ -5,8 +5,8 @@ const protooServer = require('protoo-server');
 const Logger = require('./Logger');
 const config = require('../config');
 
-const MAX_BITRATE = config.mediasoup.maxBitrate || 3000000;
-const MIN_BITRATE = Math.min(50000 || MAX_BITRATE);
+const MAX_BITRATE = config.mediasoup.maxBitrate || 1000000;
+const MIN_BITRATE = Math.min(50000, MAX_BITRATE);
 const BITRATE_FACTOR = 0.75;
 
 const logger = new Logger('Room');
@@ -106,16 +106,6 @@ class Room extends EventEmitter
 	_handleMediaRoom()
 	{
 		logger.debug('_handleMediaRoom()');
-
-		this._mediaRoom.on('newpeer', (peer) =>
-		{
-			this._updateMaxBitrate();
-
-			peer.on('close', () =>
-			{
-				this._updateMaxBitrate();
-			});
-		});
 	}
 
 	_handleProtooPeer(protooPeer)
@@ -222,7 +212,20 @@ class Room extends EventEmitter
 
 		mediaPeer.on('newtransport', (transport) =>
 		{
-			logger.info('mediaPeer "newtransport" event [id:%s]', transport.id);
+			logger.info(
+				'mediaPeer "newtransport" event [id:%s, direction:%s]',
+				transport.id, transport.direction);
+
+			// Update peers max sending  bitrate.
+			if (transport.direction === 'send')
+			{
+				this._updateMaxBitrate();
+
+				transport.on('close', () =>
+				{
+					this._updateMaxBitrate();
+				});
+			}
 
 			this._handleMediaTransport(transport);
 		});
@@ -419,20 +422,20 @@ class Room extends EventEmitter
 				newMaxBitrate = MIN_BITRATE;
 		}
 
-		if (newMaxBitrate === previousMaxBitrate)
-			return;
+		this._maxBitrate = newMaxBitrate;
 
 		for (const peer of this._mediaRoom.peers)
 		{
-			if (!peer.capabilities || peer.closed)
-				continue;
-
 			for (const transport of peer.transports)
 			{
-				if (transport.closed)
-					continue;
-
-				transport.setMaxBitrate(newMaxBitrate);
+				if (transport.direction === 'send')
+				{
+					transport.setMaxBitrate(newMaxBitrate)
+						.catch((error) =>
+						{
+							logger.error('transport.setMaxBitrate() failed: %s', String(error));
+						});
+				}
 			}
 		}
 
@@ -441,8 +444,6 @@ class Room extends EventEmitter
 			numPeers,
 			Math.round(previousMaxBitrate / 1000),
 			Math.round(newMaxBitrate / 1000));
-
-		this._maxBitrate = newMaxBitrate;
 	}
 }
 
