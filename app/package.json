@@ -22,6 +22,7 @@
     "react-clipboard.js": "^1.1.2",
     "react-dom": "^15.6.1",
     "react-notification-system": "github:ibc/react-notification-system#master",
+    "react-player": "^0.22.0",
     "react-tap-event-plugin": "^2.0.1",
     "react-transition-group": "^1.2.0",
     "sdp-transform": "^2.3.0",

@@ -7,10 +7,12 @@ import browser from 'bowser';
 import TransitionAppear from './TransitionAppear';
 import LocalVideo from './LocalVideo';
 import RemoteVideo from './RemoteVideo';
+import StreamVideo from './StreamVideo';
 import Stats from './Stats';
 import Logger from '../Logger';
 import * as utils from '../utils';
 import Client from '../Client';
+import config from '../../config';
 
 const logger = new Logger('Room');
 const STATS_INTERVAL = 1000;
@@ -103,6 +105,7 @@ export default class Room extends React.Component
 								);
 							})
 						}
+						<StreamVideo url={'https://'+config.stream.listenIp+':'+config.stream.listenPort+'/live/'+this.props.roomId+'.m3u8'}/>
 					</div>
 
 					<TransitionAppear duration={500}>
