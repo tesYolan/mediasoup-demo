@@ -10,10 +10,16 @@ export default ({ dispatch, getState }) => (next) =>
 		{
 			case 'JOIN_ROOM':
 			{
-				const { roomId, peerName, displayName, device } = action.payload;
+				const {
+					roomId,
+					peerName,
+					displayName,
+					device,
+					produce
+				} = action.payload;
 
 				client = new RoomClient(
-					{ roomId, peerName, displayName, device, dispatch, getState });
+					{ roomId, peerName, displayName, device, produce, dispatch, getState });
 
 				// TODO: TMP
 				global.CLIENT = client;

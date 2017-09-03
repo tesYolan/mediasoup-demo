@@ -1,11 +1,11 @@
 import randomString from 'random-string';
 import * as stateActions from './stateActions';
 
-export const joinRoom = ({ roomId, peerName, displayName, device }) =>
+export const joinRoom = ({ roomId, peerName, displayName, device, produce }) =>
 {
 	return {
 		type    : 'JOIN_ROOM',
-		payload : { roomId, peerName, displayName, device }
+		payload : { roomId, peerName, displayName, device, produce }
 	};
 };
 

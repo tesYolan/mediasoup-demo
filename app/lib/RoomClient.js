@@ -26,7 +26,7 @@ const VIDEO_CONSTRAINS =
 
 export default class RoomClient
 {
-	constructor({ roomId, peerName, displayName, device, dispatch, getState })
+	constructor({ roomId, peerName, displayName, device, produce, dispatch, getState })
 	{
 		logger.debug(
 			'constructor() [roomId:"%s", peerName:"%s", displayName:"%s", device:%s]',
@@ -37,6 +37,9 @@ export default class RoomClient
 
 		// Closed flag.
 		this._closed = false;
+
+		// Whether we should produce.
+		this._produce = produce;
 
 		// Flux store dispatch function.
 		this._dispatch = dispatch;
@@ -600,6 +603,11 @@ export default class RoomClient
 			})
 			.then(() =>
 			{
+				// Don't produce if explicitely requested to not to do it.
+				if (!this._produce)
+					return;
+
+				// NOTE: Don't depend on this Promise to continue (so we don't do return).
 				Promise.resolve()
 					// Add our mic.
 					.then(() =>

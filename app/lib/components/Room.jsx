@@ -28,9 +28,25 @@ const Room = ({ room, onRoomLinkCopy, onSetAudioMode }) =>
 						<ClipboardButton
 							component='a'
 							className='link'
-							button-href={window.location.href}
-							data-clipboard-text={window.location.href}
+							button-href={room.url}
+							button-target='_blank'
+							data-clipboard-text={room.url}
 							onSuccess={onRoomLinkCopy}
+							onClick={(event) =>
+							{
+								// If this is a 'Open in new window/tab' don't prevent
+								// click default action.
+								if (
+									event.ctrlKey || event.shiftKey || event.metaKey ||
+									// Middle click (IE > 9 and everyone else).
+									(event.button && event.button === 1)
+								)
+								{
+									return;
+								}
+
+								event.preventDefault();
+							}}
 						>
 							invitation link
 						</ClipboardButton>

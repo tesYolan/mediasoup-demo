@@ -4,6 +4,7 @@
 {
   room :
   {
+    url                 : 'https://example.io/?&roomId=d0el8y34',
     state               : 'connected', // new/connecting/connected/closed,
     audioOnly           : false,
     audioOnlyInProgress : false

@@ -21,8 +21,6 @@ import reducers from './flux/reducers';
 import roomClientMiddleware from './flux/roomClientMiddleware';
 import Room from './components/Room';
 
-const REGEXP_FRAGMENT_ROOM_ID = new RegExp('^#roomId=([0-9a-zA-Z_-]+)$');
-
 const logger = new Logger();
 const reduxMiddlewares =
 [
@@ -64,18 +62,28 @@ function run()
 
 	const peerName = randomString({ length: 8 }).toLowerCase();
 	const urlParser = new UrlParse(window.location.href, true);
-	const match = urlParser.hash.match(REGEXP_FRAGMENT_ROOM_ID);
-	let roomId;
+	let roomId = urlParser.query.roomId;
+	const produce = urlParser.query.produce !== 'false';
 
-	if (match)
-	{
-		roomId = match[1];
-	}
-	else
+	if (!roomId)
 	{
 		roomId = randomString({ length: 8 }).toLowerCase();
-		window.location = `#roomId=${roomId}`;
+
+		urlParser.query.roomId = roomId;
+		window.history.pushState('', '', urlParser.toString());
 	}
+
+	// Get the effective/shareable Room URL.
+	const roomUrlParser = new UrlParse(window.location.href, true);
+
+	for (const key of Object.keys(roomUrlParser.query))
+	{
+		if (key !== 'roomId')
+			delete roomUrlParser.query[key];
+	}
+	delete roomUrlParser.hash;
+
+	const roomUrl = roomUrlParser.toString();
 
 	// Get displayName from cookie.
 	const userCookie = cookiesManager.getUser() || {};
@@ -98,11 +106,15 @@ function run()
 
 	// NOTE: I don't like this.
 	store.dispatch(
+		stateActions.setRoomUrl(roomUrl));
+
+	// NOTE: I don't like this.
+	store.dispatch(
 		stateActions.setMe({ peerName, displayName, displayNameSet, device }));
 
 	// NOTE: I don't like this.
 	store.dispatch(
-		requestActions.joinRoom({ roomId, peerName, displayName, device }));
+		requestActions.joinRoom({ roomId, peerName, displayName, device, produce }));
 
 	render(
 		<Provider store={store}>

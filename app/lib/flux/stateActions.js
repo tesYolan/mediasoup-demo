@@ -1,3 +1,11 @@
+export const setRoomUrl = (url) =>
+{
+	return {
+		type    : 'SET_ROOM_URL',
+		payload : { url }
+	};
+};
+
 export const setRoomState = (state) =>
 {
 	return {
