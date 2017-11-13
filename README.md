@@ -21,7 +21,7 @@ $ cd server
 $ npm install
 ```
 
-* Copy `config.example.js` as `config.js`:
+* Copy `config.example.js` as `config.js` and customize it for your scenario:
 
 ```bash
 $ cp config.example.js config.js
@@ -32,12 +32,6 @@ $ cp config.example.js config.js
 ```bash
 $ cd app
 $ npm install
-```
-
-* Copy `config.example.js` as `config.js`:
-
-```bash
-$ cp config.example.js config.js
 ```
 
 * Globally install `gulp-cli` NPM module (may need `sudo`):
@@ -77,13 +71,9 @@ $ gulp prod
 
 * Upload the entire `server` folder to your server and make your web server (Apache, Nginx...) expose the `server/public` folder.
 
-* Edit your `server/config.js` with appropriate settings (listening IP/port, logging options, **valid** TLS certificate, etc). Also set the proper remote WebSocket port in `client/config.js`.
+* Edit your `server/config.js` with appropriate settings (listening IP/port, logging options, **valid** TLS certificate, etc).
 
-* Within your server, run the server side Node.js application. We recommend using the [forever](https://www.npmjs.com/package/forever) NPM daemon launcher, but any other can be used:
-
-```bash
-$ forever start PATH_TO_SERVER_FOLDER/server.js
-```
+* Within your server, run the server side Node.js application. We recommend using the [pm2](https://www.npmjs.com/package/pm2) NPM daemon launcher, but any other can be used.
 
 
 ## Author
