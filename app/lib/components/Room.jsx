@@ -4,7 +4,6 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 import ClipboardButton from 'react-clipboard.js';
-import StreamVideo from './StreamVideo';
 import * as appPropTypes from './appPropTypes';
 import * as requestActions from '../redux/requestActions';
 import { Appear } from './transitions';
@@ -59,7 +58,6 @@ const Room = (
 						>
 							invitation link
 						</ClipboardButton>
-						<StreamVideo url={'https://'+config.stream.listenIp+':'+config.stream.listenPort+'/live/'+this.props.roomId+'.m3u8'}/>
 					</div>
 				</div>
 
