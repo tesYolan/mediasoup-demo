@@ -5,8 +5,11 @@ import classnames from 'classnames';
 import * as appPropTypes from './appPropTypes';
 import { Appear } from './transitions';
 import Peer from './Peer';
+import config from '../../config';
+import StreamVideo from './StreamVideo';
+import UrlParse from 'url-parse';
 
-const Peers = ({ peers, activeSpeakerName }) =>
+const Peers = ({ peers, roomId, activeSpeakerName }) =>
 {
 	return (
 		<div data-component='Peers'>
@@ -26,6 +29,7 @@ const Peers = ({ peers, activeSpeakerName }) =>
 					);
 				})
 			}
+			<StreamVideo url={`https://${config.stream.listenIp}:${config.stream.listenPort}/live/${ roomId }.m3u8`}/>
 		</div>
 	);
 };
@@ -33,17 +37,21 @@ const Peers = ({ peers, activeSpeakerName }) =>
 Peers.propTypes =
 {
 	peers             : PropTypes.arrayOf(appPropTypes.Peer).isRequired,
+	roomId            : PropTypes.string.isRequired,
 	activeSpeakerName : PropTypes.string
 };
 
 const mapStateToProps = (state) =>
 {
 	// TODO: This is not OK since it's creating a new array every time, so triggering a
-	// component rendering.
+	// component rendering
 	const peersArray = Object.values(state.peers);
 
+	const urlParser = new UrlParse(state.room.url, true);
+	
 	return {
 		peers             : peersArray,
+		roomId            : urlParser.query.roomId,
 		activeSpeakerName : state.room.activeSpeakerName
 	};
 };
